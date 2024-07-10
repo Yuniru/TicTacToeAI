@@ -93,34 +93,33 @@ bool gameOver(char board[][SIDE])
 {
 	return (rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board));
 }
-bool legalMove(int code,int newmove)
+bool legalMove(int code, int newmove)
 {
 	int n = 5;
-	while( n --> 0)
+	while (n-- > 0)
 	{
-		int move = code & ((1<<4)-1);
+		int move = code & ((1 << 4) - 1);
 		if (move == newmove)
 			return false;
-		
-		code>>=5;
+
+		code >>= 5;
 	}
-	return true;
+	return true ;
 }
 
 void decode(char board[][SIDE], int code)
 {
 	initialise(board);
 	int n = 5;
-	while( n --> 0)
+	while (n-- > 0)
 	{
-		int move = code & ((1<<4)-1);
-		int isAI = (code >>4) & 1;
-		if(move != ((1<<4) - 1))
-			board[move/SIDE][move%SIDE] = isAI?AIMOVE:PlayerMOVE;
-		code>>=5;
+		int move = code & ((1 << 4) - 1);
+		int isAI = (code >> 4) & 1;
+		if (move != ((1 << 4) - 1))
+			board[move / SIDE][move % SIDE] = isAI ? AIMOVE : PlayerMOVE;
+		code >>= 5;
 	}
 }
-
 
 // minimax算法
 int minimax(int code, int depth, bool isAI, int alpha, int beta)
@@ -151,7 +150,7 @@ int minimax(int code, int depth, bool isAI, int alpha, int beta)
 						{
 							// board[i][j] = AIMOVE;
 							code <<= 5;
-							code += (1<<4) + i*3 + j;
+							code += (1 << 4) + i * 3 + j;
 							score = minimax(code, depth + 1, false, alpha, beta);
 							// board[i][j] = ' ';
 							code >>= 5;
@@ -181,7 +180,7 @@ int minimax(int code, int depth, bool isAI, int alpha, int beta)
 						{
 							// board[i][j] = PlayerMOVE;
 							code <<= 5;
-							code +=  i*3 + j;
+							code += i * 3 + j;
 							score = minimax(code, depth + 1, true, alpha, beta);
 							// board[i][j] = ' ';
 							code >>= 5;
@@ -226,8 +225,8 @@ int bestMove(int code, int moveIndex)
 				// board[i][j] = ' ';
 
 				code <<= 5;
-				code += (1<<4) + i*3 + j;
-				score = minimax(code,  1, false, -999, 999);
+				code += (1 << 4) + i * 3 + j;
+				score = minimax(code, 1, false, -999, 999);
 				// board[i][j] = ' ';
 				code >>= 5;
 
@@ -250,7 +249,7 @@ void playTicTacToe(int whoseTurn)
 	int moveIndex = 0, x = 0, y = 0;
 
 	char board[SIDE][SIDE];
-	decode (board, code);
+	decode(board, code);
 	int cnt_step = 0;
 	// 当棋局没有结束或平局
 	while (gameOver(board) == false) //&& moveIndex != SIDE * SIDE)
@@ -263,20 +262,19 @@ void playTicTacToe(int whoseTurn)
 			y = n % SIDE;
 			code <<= 5;
 			// code += 1<<4 + x * 3 + y;
-			code += (1<<4) + n;
+			code += (1 << 4) + n;
 			cnt_step++;
 			cout << "第" << cnt_step << "次落子：" << n + 1 << endl;
 
-			
 			if (cnt_step >= 6)
 			{
-				n = code & ((1<<30) - (1<<25));
+				n = code & ((1 << 30) - (1 << 25));
 				n >>= 25;
-				cout <<n+1 << "消失。" << endl;
-				
-				n = code & ((1<<25) - (1<<20));
+				cout << n + 1 << "消失。" << endl;
+
+				n = code & ((1 << 25) - (1 << 20));
 				n >>= 20;
-				cout  <<n+1 << "即将消失。" << endl;
+				cout << n + 1 << "即将消失。" << endl;
 			}
 			decode(board, code);
 			showBoard(board);
@@ -298,31 +296,30 @@ void playTicTacToe(int whoseTurn)
 			x = n / SIDE;
 			y = n % SIDE;
 
-			if (n >= 0 && n < 9 && legalMove(code,n))
+			if (n >= 0 && n < 9 && legalMove(code, n))
 			{
 				code <<= 5;
-				code +=  + n;
+				code += +n;
 				cnt_step++;
 				cout << "第" << cnt_step << "次落子：" << n + 1 << endl;
 
-				
 				if (cnt_step >= 6)
 				{
-					n = code & ((1<<30) - (1<<25));
+					n = code & ((1 << 30) - (1 << 25));
 					n >>= 25;
-					cout <<n+1 << "消失。" << endl;
+					cout << n + 1 << "消失。" << endl;
 
-					n = code & ((1<<25) - (1<<20));
+					n = code & ((1 << 25) - (1 << 20));
 					n >>= 20;
-					cout  <<n+1 << "即将消失。" << endl;
+					cout << n + 1 << "即将消失。" << endl;
 				}
-				decode (board, code);
+				decode(board, code);
 				showBoard(board);
 				// printf("%x",code);
 				cout << endl;
 				moveIndex++;
 				whoseTurn = AI;
-			}			
+			}
 			else if (n < 0 || n > 8)
 			{
 				cout << "请正确输入。" << endl;
@@ -333,10 +330,9 @@ void playTicTacToe(int whoseTurn)
 				printf("%x", code);
 				cout << "此处有棋子不能落子。" << endl;
 			}
-
 		}
 	}
-	decode( board, code);
+	decode(board, code);
 	// 平局
 	if (gameOver(board) == false) //&& moveIndex == SIDE * SIDE)
 	{
